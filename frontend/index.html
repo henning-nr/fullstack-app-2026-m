@@ -1,0 +1,96 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Petshop Fullstack</title>
+    <link rel="stylesheet" href="./styles.css" />
+  </head>
+  <body>
+    <div class="page">
+      <header class="hero">
+        <div>
+          <p class="eyebrow">Projeto fullstack petshop</p>
+          <h1>CRUD completo com JWT, Swagger e Docker</h1>
+          <p class="subtitle">
+            Interface simples para gerenciar tutores, pets, serviços, produtos e agendamentos.
+          </p>
+        </div>
+        <a class="docs-link" href="http://localhost:3000/api/docs" target="_blank" rel="noreferrer">Abrir Swagger</a>
+      </header>
+
+      <section class="card auth-grid">
+        <form id="register-form" class="stack">
+          <h2>Criar usuário</h2>
+          <label>
+            Nome
+            <input name="name" placeholder="Equipe Petshop" required />
+          </label>
+          <label>
+            E-mail
+            <input name="email" type="email" placeholder="equipe@petshop.com" required />
+          </label>
+          <label>
+            Senha
+            <input name="password" type="password" placeholder="123456" required />
+          </label>
+          <button type="submit">Cadastrar</button>
+        </form>
+
+        <form id="login-form" class="stack">
+          <h2>Entrar</h2>
+          <label>
+            E-mail
+            <input name="email" type="email" placeholder="equipe@petshop.com" required />
+          </label>
+          <label>
+            Senha
+            <input name="password" type="password" placeholder="123456" required />
+          </label>
+          <button type="submit">Login</button>
+        </form>
+      </section>
+
+      <section class="card status-card">
+        <div>
+          <strong>Status da sessão:</strong>
+          <span id="session-status">não autenticado</span>
+        </div>
+        <div id="current-user"></div>
+        <div id="feedback" class="feedback"></div>
+      </section>
+
+      <section class="card" id="app-section">
+        <div class="toolbar">
+          <div id="entity-tabs" class="tabs"></div>
+          <div class="toolbar-actions">
+            <button id="refresh-button" type="button">Atualizar lista</button>
+            <button id="logout-button" type="button" class="secondary">Sair</button>
+          </div>
+        </div>
+
+        <div class="content-grid">
+          <form id="entity-form" class="stack">
+            <h2 id="form-title">Novo registro</h2>
+            <div id="form-fields" class="stack"></div>
+            <div class="form-actions">
+              <button type="submit">Salvar</button>
+              <button id="cancel-edit" type="button" class="secondary">Cancelar edição</button>
+            </div>
+          </form>
+
+          <div class="table-wrapper">
+            <table>
+              <thead>
+                <tr id="table-head"></tr>
+              </thead>
+              <tbody id="table-body"></tbody>
+            </table>
+          </div>
+        </div>
+      </section>
+    </div>
+
+    <script src="./app.js"></script>
+  </body>
+</html>
