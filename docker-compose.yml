@@ -1,0 +1,42 @@
+services:
+  db:
+    image: postgres:16-alpine
+    container_name: petshop-db
+    environment:
+      POSTGRES_DB: petshop_db
+      POSTGRES_USER: petshop
+      POSTGRES_PASSWORD: petshop
+    ports:
+      - "5432:5432"
+    volumes:
+      - postgres_data:/var/lib/postgresql/data
+
+  backend:
+    build:
+      context: /tmp/workspace/henning-nr/fullstack-app-2026-m/backend
+    container_name: petshop-backend
+    depends_on:
+      - db
+    environment:
+      PORT: 3000
+      DB_HOST: db
+      DB_PORT: 5432
+      DB_NAME: petshop_db
+      DB_USER: petshop
+      DB_PASSWORD: petshop
+      JWT_SECRET: super-secret-jwt
+      FRONTEND_ORIGIN: http://localhost:8080
+    ports:
+      - "3000:3000"
+
+  frontend:
+    build:
+      context: /tmp/workspace/henning-nr/fullstack-app-2026-m/frontend
+    container_name: petshop-frontend
+    depends_on:
+      - backend
+    ports:
+      - "8080:80"
+
+volumes:
+  postgres_data:
