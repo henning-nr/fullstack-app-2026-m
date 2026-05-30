@@ -1,7 +1,7 @@
 const { Pool } = require('pg');
 const env = require('./env');
 
-const pool = new Pool(env.db);
+let pool;
 
 const tableStatements = [
   `CREATE TABLE IF NOT EXISTS users (
@@ -56,27 +56,56 @@ const tableStatements = [
 
 const sleep = (ms) => new Promise((resolve) => setTimeout(resolve, ms));
 
+function getPool() {
+  if (!pool) {
+    pool = new Pool({
+      ...env.db,
+      connectionTimeoutMillis: 5000,
+    });
+  }
+
+  return pool;
+}
+
+async function resetPool() {
+  if (!pool) {
+    return;
+  }
+
+  try {
+    await pool.end();
+  } catch (error) {
+    // Ignora falhas no encerramento porque um novo pool será criado na próxima tentativa.
+  } finally {
+    pool = null;
+  }
+}
+
 async function initializeDatabase() {
   for (let attempt = 1; attempt <= 15; attempt += 1) {
     try {
+      const activePool = getPool();
+
       // Garante a estrutura mínima para todos os CRUDs do projeto - [OpenAI]
       for (const statement of tableStatements) {
-        await pool.query(statement);
+        await activePool.query(statement);
       }
 
       return;
     } catch (error) {
+      await resetPool();
+
       if (attempt === 15) {
         throw error;
       }
 
+      console.warn(`Tentativa ${attempt} de conexão com o banco falhou. Nova tentativa em 2s.`);
       await sleep(2000);
     }
   }
 }
 
 module.exports = {
-  pool,
-  query: (text, params) => pool.query(text, params),
+  query: (text, params) => getPool().query(text, params),
   initializeDatabase,
 };

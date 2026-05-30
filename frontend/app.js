@@ -94,13 +94,15 @@ function escapeHtml(value) {
 }
 
 async function request(path, options = {}) {
+  const headers = {
+    'Content-Type': 'application/json',
+    ...(state.token ? { Authorization: 'Bearer ' + state.token } : {}),
+    ...(options.headers || {}),
+  };
+
   const response = await fetch(`${API_BASE}${path}`, {
-    headers: {
-      'Content-Type': 'application/json',
-      ...(state.token ? { Authorization: 'Bearer ' + state.token } : {}),
-      ...(options.headers || {}),
-    },
     ...options,
+    headers,
   });
 
   if (response.status === 204) {

@@ -85,11 +85,12 @@ function parseValue(field, value, config) {
 }
 
 function normalizePayload(config, body, partial = false) {
+  const source = body && typeof body === 'object' ? body : {};
   const data = {};
 
   for (const field of config.fields) {
-    if (Object.prototype.hasOwnProperty.call(body, field)) {
-      data[field] = parseValue(field, body[field], config);
+    if (Object.prototype.hasOwnProperty.call(source, field)) {
+      data[field] = parseValue(field, source[field], config);
     }
   }
 

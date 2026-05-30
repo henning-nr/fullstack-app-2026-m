@@ -10,16 +10,25 @@ services:
       - "5432:5432"
     volumes:
       - postgres_data:/var/lib/postgresql/data
+    networks:
+      petshop-network:
+        ipv4_address: 172.30.0.10
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready -U petshop -d petshop_db"]
+      interval: 5s
+      timeout: 5s
+      retries: 10
 
   backend:
     build:
       context: /tmp/workspace/henning-nr/fullstack-app-2026-m/backend
     container_name: petshop-backend
     depends_on:
-      - db
+      db:
+        condition: service_healthy
     environment:
       PORT: 3000
-      DB_HOST: db
+      DB_HOST: 172.30.0.10
       DB_PORT: 5432
       DB_NAME: petshop_db
       DB_USER: petshop
@@ -28,6 +37,10 @@ services:
       FRONTEND_ORIGIN: http://localhost:8080
     ports:
       - "3000:3000"
+    restart: unless-stopped
+    networks:
+      petshop-network:
+        ipv4_address: 172.30.0.11
 
   frontend:
     build:
@@ -37,6 +50,16 @@ services:
       - backend
     ports:
       - "8080:80"
+    networks:
+      petshop-network:
+        ipv4_address: 172.30.0.12
 
 volumes:
   postgres_data:
+
+networks:
+  petshop-network:
+    driver: bridge
+    ipam:
+      config:
+        - subnet: 172.30.0.0/24

@@ -26,9 +26,10 @@ function buildAuthResponse(user) {
 
 router.post('/register', async (req, res, next) => {
   try {
-    const name = String(req.body.name || '').trim();
-    const email = String(req.body.email || '').trim().toLowerCase();
-    const password = String(req.body.password || '').trim();
+    const body = req.body || {};
+    const name = String(body.name || '').trim();
+    const email = String(body.email || '').trim().toLowerCase();
+    const password = String(body.password || '').trim();
 
     if (!name || !email || !password) {
       return res.status(400).json({ message: 'Nome, e-mail e senha são obrigatórios.' });
@@ -56,8 +57,9 @@ router.post('/register', async (req, res, next) => {
 
 router.post('/login', async (req, res, next) => {
   try {
-    const email = String(req.body.email || '').trim().toLowerCase();
-    const password = String(req.body.password || '').trim();
+    const body = req.body || {};
+    const email = String(body.email || '').trim().toLowerCase();
+    const password = String(body.password || '').trim();
 
     if (!email || !password) {
       return res.status(400).json({ message: 'E-mail e senha são obrigatórios.' });
