@@ -3,9 +3,9 @@ services:
     image: postgres:16-alpine
     container_name: petshop-db
     environment:
-      POSTGRES_DB: petshop_db
-      POSTGRES_USER: petshop
-      POSTGRES_PASSWORD: petshop
+      POSTGRES_DB: ${DB_NAME:-petshop_db}
+      POSTGRES_USER: ${DB_USER:-petshop}
+      POSTGRES_PASSWORD: ${DB_PASSWORD:?defina DB_PASSWORD no arquivo .env}
     ports:
       - "5432:5432"
     volumes:
@@ -21,7 +21,7 @@ services:
 
   backend:
     build:
-      context: /tmp/workspace/henning-nr/fullstack-app-2026-m/backend
+      context: ./backend
     container_name: petshop-backend
     depends_on:
       db:
@@ -30,11 +30,11 @@ services:
       PORT: 3000
       DB_HOST: 172.30.0.10
       DB_PORT: 5432
-      DB_NAME: petshop_db
-      DB_USER: petshop
-      DB_PASSWORD: petshop
-      JWT_SECRET: super-secret-jwt
-      FRONTEND_ORIGIN: http://localhost:8080
+      DB_NAME: ${DB_NAME:-petshop_db}
+      DB_USER: ${DB_USER:-petshop}
+      DB_PASSWORD: ${DB_PASSWORD:?defina DB_PASSWORD no arquivo .env}
+      JWT_SECRET: ${JWT_SECRET:?defina JWT_SECRET no arquivo .env}
+      FRONTEND_ORIGIN: ${FRONTEND_ORIGIN:-http://localhost:8080}
     ports:
       - "3000:3000"
     restart: unless-stopped
@@ -44,7 +44,7 @@ services:
 
   frontend:
     build:
-      context: /tmp/workspace/henning-nr/fullstack-app-2026-m/frontend
+      context: ./frontend
     container_name: petshop-frontend
     depends_on:
       - backend

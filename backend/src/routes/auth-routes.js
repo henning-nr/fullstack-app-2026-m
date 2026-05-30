@@ -4,8 +4,16 @@ const jwt = require('jsonwebtoken');
 const db = require('../config/db');
 const env = require('../config/env');
 const { requireAuth } = require('../middleware/auth');
+const { createRateLimit } = require('../middleware/rate-limit');
 
 const router = express.Router();
+const authRateLimit = createRateLimit({
+  windowMs: 60 * 1000,
+  maxRequests: 20,
+  message: 'Muitas tentativas em pouco tempo. Aguarde e tente novamente.',
+});
+
+router.use(authRateLimit);
 
 function buildAuthResponse(user) {
   const token = jwt.sign(

@@ -1,6 +1,7 @@
 const express = require('express');
 const db = require('../config/db');
 const { requireAuth } = require('../middleware/auth');
+const { createRateLimit } = require('../middleware/rate-limit');
 
 const entityConfigs = {
   tutors: {
@@ -35,6 +36,12 @@ const entityConfigs = {
     dates: ['scheduled_at'],
   },
 };
+
+const apiRateLimit = createRateLimit({
+  windowMs: 60 * 1000,
+  maxRequests: 120,
+  message: 'Limite de requisições excedido. Tente novamente em instantes.',
+});
 
 function createHttpError(status, message) {
   const error = new Error(message);
@@ -116,6 +123,7 @@ function normalizePayload(config, body, partial = false) {
 function createEntityRouter(entityName, config) {
   const router = express.Router();
 
+  router.use(apiRateLimit);
   router.use(requireAuth);
 
   router.get('/', async (req, res, next) => {

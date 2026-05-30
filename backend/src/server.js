@@ -4,6 +4,10 @@ const db = require('./config/db');
 
 async function startServer() {
   try {
+    if (!env.jwtSecret) {
+      throw new Error('JWT_SECRET precisa ser definido antes de iniciar o backend.');
+    }
+
     await db.initializeDatabase();
 
     app.listen(env.port, () => {

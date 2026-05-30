@@ -24,6 +24,8 @@ Aplicação fullstack do tema **Petshop** com:
 ## Como executar com Docker
 
 ```bash
+cp .env.example .env
+# edite o arquivo .env e defina valores fortes para DB_PASSWORD e JWT_SECRET
 docker compose up --build
 ```
 
@@ -37,7 +39,7 @@ Serviços disponíveis:
 ## Como executar o backend localmente
 
 ```bash
-cd /tmp/workspace/henning-nr/fullstack-app-2026-m/backend
+cd backend
 npm install
 npm start
 ```
@@ -52,6 +54,8 @@ Variáveis aceitas pelo backend:
 - `DB_PASSWORD`
 - `JWT_SECRET`
 - `FRONTEND_ORIGIN`
+
+> Para usar Docker Compose, crie um arquivo `.env` na raiz com base no `.env.example`.
 
 ## Fluxo sugerido para demonstrar
 
